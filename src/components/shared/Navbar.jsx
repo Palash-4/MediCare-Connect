@@ -3,26 +3,39 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
 
-import { FaHeartbeat, FaUserCircle } from "react-icons/fa";
+import { FaHeartbeat } from "react-icons/fa";
+import { FiMenu, FiX, FiMoon, FiSun } from "react-icons/fi";
 
-import { FiMenu, FiX, FiSearch, FiMoon, FiSun, FiBell } from "react-icons/fi";
 
-import { MdDashboard, MdLogout } from "react-icons/md";
 
 export default function Navbar() {
+
+  const router = useRouter();
+  const { data: session } = authClient.useSession();
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
 
+  const [showProfileMenu, setShowProfileMenu] =
+    useState(false);
+
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const user = null;
+  const handleLogout = async () => {
+    await authClient.signOut();
+
+    toast.success("Logged Out");
+
+    router.push("/");
+  };
 
   const role = "Patient";
 
@@ -31,6 +44,10 @@ export default function Navbar() {
     { name: "Find Doctors", href: "/doctors" },
     { name: "About Us", href: "/about" },
     { name: "Contact Us", href: "/contact" },
+
+    ...(session
+      ? [{ name: "Dashboard", href: "/dashboard" }]
+      : []),
   ];
 
   return (
@@ -85,7 +102,9 @@ export default function Navbar() {
             <div className="hidden lg:flex items-center gap-5">
               {mounted && (
                 <button
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  onClick={() =>
+                    setTheme(theme === "dark" ? "light" : "dark")
+                  }
                   className="p-3 rounded-full bg-slate-100 dark:bg-slate-800"
                 >
                   {theme === "dark" ? (
@@ -96,25 +115,92 @@ export default function Navbar() {
                 </button>
               )}
 
-              <Link
-                href="/login"
-                className={`px-4 py-2 rounded-xl transition-all ${pathname === "/login"
-                  ? "bg-blue-600 text-white shadow-md"
-                  : "text-slate-700 dark:text-slate-200 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-slate-800"
-                  }`}
-              >
-                Sign In
-              </Link>
+              {!session ? (
+                <>
+                  <Link
+                    href="/login"
+                    className={`px-4 py-2 rounded-xl transition-all ${pathname === "/login"
+                      ? "bg-blue-600 text-white"
+                      : "hover:bg-blue-50"
+                      }`}
+                  >
+                    Sign In
+                  </Link>
 
-              <Link
-                href="/register"
-                className={`px-4 py-2 rounded-xl transition-all duration-300 ${pathname === "/register"
-                  ? "bg-blue-600 text-white shadow-md"
-                  : "text-slate-700 dark:text-slate-200 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-slate-800"
-                  }`}
-              >
-                Join Us
-              </Link>
+                  <Link
+                    href="/register"
+                    className={`px-4 py-2 rounded-xl transition-all ${pathname === "/register"
+                      ? "bg-blue-600 text-white"
+                      : "hover:bg-blue-50"
+                      }`}
+                  >
+                    Join Us
+                  </Link>
+                </>
+              ) : (
+                <div className="relative">
+
+                  <button
+                    onClick={() =>
+                      setShowProfileMenu(!showProfileMenu)
+                    }
+                    className="flex items-center gap-2"
+                  >
+                    <img
+                      src={
+                        session?.user?.image ||
+                        "https://i.pravatar.cc/150?img=12"
+                      }
+                      alt="profile"
+                      className="w-11 h-11 rounded-full object-cover border-2 border-blue-500"
+                    />
+                  </button>
+
+                  {showProfileMenu && (
+                    <div className="absolute right-0 mt-3 w-56 bg-white dark:bg-slate-900 rounded-xl shadow-lg border dark:border-slate-700 overflow-hidden">
+
+                      <div className="px-4 py-3 border-b dark:border-slate-700">
+                        <p className="font-semibold">
+                          {session?.user?.name}
+                        </p>
+
+                        <p className="text-xs text-slate-500">
+                          {session?.user?.email}
+                        </p>
+                      </div>
+
+                      <Link
+                        href="/profile"
+                        className="block px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      >
+                        My Profile
+                      </Link>
+
+                      <Link
+                        href="/dashboard"
+                        className="block px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      >
+                        Dashboard
+                      </Link>
+
+                      <Link
+                        href="/appointments"
+                        className="block px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      >
+                        My Appointments
+                      </Link>
+
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left px-4 py-3 text-red-500 hover:bg-red-50"
+                      >
+                        Logout
+                      </button>
+
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Mobile Toggle */}
@@ -127,9 +213,11 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Menu */}
+          {/* Mobile Menu */}
           {isOpen && (
             <div className="lg:hidden border-t dark:border-slate-800 py-4">
-              <div className="flex flex-col gap-4 text-slate-700 dark:text-slate-200">
+              <div className="flex flex-col gap-4">
+
                 {navItems.map((item) => (
                   <Link
                     key={item.href}
@@ -140,30 +228,20 @@ export default function Navbar() {
                   </Link>
                 ))}
 
-                {user && (
+                {session ? (
                   <>
-                    <Link href="/dashboard">Dashboard</Link>
+                    <Link href="/dashboard">
+                      Dashboard
+                    </Link>
 
-                    <Link href="/appointments">My Appointments</Link>
-
-                    <Link href="/prescriptions">Prescriptions</Link>
-
-                    <Link href="/profile">Profile</Link>
+                    <button
+                      onClick={handleLogout}
+                      className="text-left text-red-500"
+                    >
+                      Logout
+                    </button>
                   </>
-                )}
-
-                {mounted && (
-                  <button
-                    onClick={() =>
-                      setTheme(theme === "dark" ? "light" : "dark")
-                    }
-                    className="text-left"
-                  >
-                    {theme === "dark" ? "☀ Light Mode" : "🌙 Dark Mode"}
-                  </button>
-                )}
-
-                {!user && (
+                ) : (
                   <>
                     <Link
                       href="/login"
@@ -180,6 +258,7 @@ export default function Navbar() {
                     </Link>
                   </>
                 )}
+
               </div>
             </div>
           )}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { FaHeartbeat } from "react-icons/fa";
@@ -7,6 +8,8 @@ import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 
 export default function LoginPage() {
+
+  const router = useRouter();
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -25,6 +28,7 @@ export default function LoginPage() {
     }
 
     toast.success("Login Successful");
+    router.push("/dashboard");
 
     console.log(data);
   };
@@ -33,6 +37,7 @@ export default function LoginPage() {
     const { data, error } =
       await authClient.signIn.social({
         provider: "google",
+        callbackURL: "/dashboard",
       });
 
     if (error) {
@@ -96,16 +101,6 @@ export default function LoginPage() {
               placeholder="Enter your password"
               className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-          </div>
-
-          {/* Forgot Password */}
-          <div className="flex justify-end">
-            <Link
-              href="/forgot-password"
-              className="text-sm text-blue-600 hover:underline"
-            >
-              Forgot Password?
-            </Link>
           </div>
 
           {/* Login Button */}
