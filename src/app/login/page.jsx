@@ -1,8 +1,47 @@
+"use client";
+
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { FaHeartbeat } from "react-icons/fa";
+import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+
+    const { data, error } = await authClient.signIn.email({
+      email,
+      password,
+    });
+
+    if (error) {
+      toast.error("Invalid Email or Password");
+      return;
+    }
+
+    toast.success("Login Successful");
+
+    console.log(data);
+  };
+
+  const handleGoogleLogin = async () => {
+    const { data, error } =
+      await authClient.signIn.social({
+        provider: "google",
+      });
+
+    if (error) {
+      toast.error("Google Login Failed");
+      return;
+    }
+
+    toast.success("Login Successful");
+  };
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-xl p-8">
@@ -26,7 +65,10 @@ export default function LoginPage() {
         </div>
 
         {/* Form */}
-        <form className="space-y-5">
+        <form
+          onSubmit={onSubmit}
+          className="space-y-5"
+        >
 
           {/* Email */}
           <div>
@@ -89,6 +131,8 @@ export default function LoginPage() {
 
         {/* Google Login */}
         <button
+          type="button"
+          onClick={handleGoogleLogin}
           className="w-full border border-slate-300 dark:border-slate-700 py-3 rounded-xl flex items-center justify-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
         >
           <FcGoogle size={22} />
