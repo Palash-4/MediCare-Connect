@@ -1,151 +1,125 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { FcGoogle } from "react-icons/fc";
-import { FaHeartbeat } from "react-icons/fa";
 import { authClient } from "@/lib/auth-client";
-import toast from "react-hot-toast";
+import PatientOverviewItems from "@/components/home/PatientOverviewItems";
 
-export default function LoginPage() {
+export default function PatientDashboard() {
+  const { data: session } = authClient.useSession();
 
-  const router = useRouter();
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-
-    const email = e.target.email.value;
-    const password = e.target.password.value;
-
-    const { data, error } = await authClient.signIn.email({
-      email,
-      password,
-    });
-
-    if (error) {
-      toast.error("Invalid Email or Password");
-      return;
-    }
-
-    toast.success("Login Successful");
-    router.push("/dashboard");
-
-    console.log(data);
-  };
-
-  const handleGoogleLogin = async () => {
-    const { data, error } =
-      await authClient.signIn.social({
-        provider: "google",
-        callbackURL: "/dashboard",
-      });
-
-    if (error) {
-      toast.error("Google Login Failed");
-      return;
-    }
-
-    toast.success("Login Successful");
-  };
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-xl p-8">
+    <div className="space-y-8">
 
-        {/* Logo */}
-        <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-blue-600 to-sky-500 flex items-center justify-center">
-            <FaHeartbeat className="text-white text-3xl" />
-          </div>
-        </div>
+      {/* Welcome Banner */}
+      <div className="bg-gradient-to-r from-blue-600 to-sky-500 rounded-3xl p-8 shadow-xl text-white">
 
-        {/* Heading */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
-            Welcome Back
-          </h1>
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
 
-          <p className="text-slate-500 mt-2">
-            Sign in to access your healthcare portal
-          </p>
-        </div>
-
-        {/* Form */}
-        <form
-          onSubmit={onSubmit}
-          className="space-y-5"
-        >
-
-          {/* Email */}
           <div>
-            <label className="block mb-2 text-sm font-medium">
-              Email Address
-            </label>
+            <h1 className="text-4xl font-bold">
+              Welcome Back,
+              <span className="block mt-2">
+                {session?.user?.name || "Patient"} 👋
+              </span>
+            </h1>
 
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter your email"
-              className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <p className="mt-3 text-blue-100 max-w-xl">
+              Manage appointments, connect with doctors,
+              access medical records and monitor your
+              healthcare journey from one place.
+            </p>
           </div>
 
-          {/* Password */}
-          <div>
-            <label className="block mb-2 text-sm font-medium">
-              Password
-            </label>
+          <div className="bg-white/20 backdrop-blur-md px-6 py-4 rounded-2xl text-center">
+            <p className="text-sm text-blue-100">
+              Current Plan
+            </p>
 
-            <input
-              type="password"
-              name="password"
-              placeholder="Enter your password"
-              className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <h2 className="text-2xl font-bold">
+              Basic Member
+            </h2>
           </div>
 
-          {/* Login Button */}
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition"
-          >
-            Sign In
-          </button>
-
-        </form>
-
-        {/* Divider */}
-        <div className="flex items-center gap-4 my-6">
-          <div className="flex-1 h-px bg-slate-300"></div>
-
-          <span className="text-sm text-slate-500">
-            OR
-          </span>
-
-          <div className="flex-1 h-px bg-slate-300"></div>
         </div>
-
-        {/* Google Login */}
-        <button
-          type="button"
-          onClick={handleGoogleLogin}
-          className="w-full border border-slate-300 dark:border-slate-700 py-3 rounded-xl flex items-center justify-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
-        >
-          <FcGoogle size={22} />
-          Continue with Google
-        </button>
-
-        {/* Register Link */}
-        <p className="text-center text-sm text-slate-500 mt-6">
-          Don't have an account?{" "}
-          <Link
-            href="/register"
-            className="text-blue-600 font-semibold hover:underline"
-          >
-            Create Account
-          </Link>
-        </p>
 
       </div>
+
+      {/* Stats & Subscription */}
+      <PatientOverviewItems />
+
+      {/* Recent Appointments */}
+      <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-lg p-6 border border-slate-200 dark:border-slate-800">
+
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold">
+            Recent Appointments
+          </h2>
+
+          <button className="text-blue-600 font-semibold hover:underline">
+            View All
+          </button>
+        </div>
+
+        <div className="space-y-4">
+
+          <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-800">
+
+            <div>
+              <h3 className="font-semibold">
+                Dr. Sarah Ahmed
+              </h3>
+
+              <p className="text-sm text-slate-500">
+                Cardiology
+              </p>
+            </div>
+
+            <span className="bg-blue-100 text-blue-600 px-4 py-1 rounded-full text-sm font-medium">
+              25 June 2026
+            </span>
+
+          </div>
+
+          <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-800">
+
+            <div>
+              <h3 className="font-semibold">
+                Dr. Hasan Karim
+              </h3>
+
+              <p className="text-sm text-slate-500">
+                Neurology
+              </p>
+            </div>
+
+            <span className="bg-green-100 text-green-600 px-4 py-1 rounded-full text-sm font-medium">
+              30 June 2026
+            </span>
+
+          </div>
+
+          <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-800">
+
+            <div>
+              <h3 className="font-semibold">
+                Dr. Mahmud Rahman
+              </h3>
+
+              <p className="text-sm text-slate-500">
+                Orthopedics
+              </p>
+            </div>
+
+            <span className="bg-purple-100 text-purple-600 px-4 py-1 rounded-full text-sm font-medium">
+              05 July 2026
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   );
 }
+

@@ -6,16 +6,54 @@ import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { FaHeartbeat } from "react-icons/fa";
 import { authClient } from "@/lib/auth-client";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 
 export default function RegisterPage() {
     const router = useRouter();
+    const [image, setImage] = useState("");
+    const [uploading, setUploading] = useState(false);
+    const handleImageChange = async (e) => {
+  const file = e.target.files[0];
+
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append("image", file);
+
+  try {
+    setUploading(true);
+
+    const res = await fetch(
+      `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const data = await res.json();
+
+    console.log(data);
+
+    if (data.success) {
+      setImage(data.data.display_url);
+      toast.success("Image Uploaded");
+    } else {
+      toast.error("Image Upload Failed");
+    }
+  } catch (error) {
+    console.log(error);
+    toast.error("Image Upload Failed");
+  } finally {
+    setUploading(false);
+  }
+};
     const onSubmit = async (e) => {
         e.preventDefault();
 
         const name = e.target.name.value;
-        const image = e.target.photo.value;
         const email = e.target.email.value;
         const password = e.target.password.value;
         const role = e.target.role.value;
@@ -23,6 +61,10 @@ export default function RegisterPage() {
 
         if (password !== confirmPassword) {
             toast.error("Passwords do not match");
+            return;
+        }
+        if (!image) {
+            toast.error("Please upload profile image");
             return;
         }
 
@@ -36,7 +78,7 @@ export default function RegisterPage() {
         }
 
         try {
-            const { data, error } =
+            const { data:userData, error } =
                 await authClient.signUp.email({
                     name,
                     email,
@@ -60,7 +102,7 @@ export default function RegisterPage() {
             e.target.reset();
 
             setTimeout(() => {
-                router.push("/login");
+                router.push("/");
             }, 1000);
 
         } catch (err) {
@@ -123,11 +165,24 @@ export default function RegisterPage() {
                     />
 
                     <input
-                        type="url"
-                        name="photo"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
                         placeholder="Photo URL"
                         className="w-full px-4 py-3 rounded-xl border"
                     />
+                    {uploading && (
+                        <p className="text-sm text-blue-500">
+                            Uploading image...
+                        </p>
+                    )}
+                    {image && (
+                        <img
+                            src={image}
+                            alt="preview"
+                            className="w-20 h-20 rounded-full object-cover mx-auto border-2 border-blue-500"
+                        />
+                    )}
 
                     <input
                         type="password"
@@ -160,12 +215,12 @@ export default function RegisterPage() {
                             <option value="doctor">Doctor</option>
                         </select>
                     </div>
-
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700"
+                        disabled={uploading}
+                        className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 disabled:opacity-50"
                     >
-                        Create Account
+                        {uploading ? "Uploading..." : "Create Account"}
                     </button>
                 </form>
 

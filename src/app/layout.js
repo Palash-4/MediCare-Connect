@@ -9,10 +9,7 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning>
       <body>
         <Providers>
-          <Navbar />
           {children}
-          <Footer />
-
           <Toaster
             position="top-center"
             reverseOrder={false}
