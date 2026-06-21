@@ -5,7 +5,7 @@ import { FaStar } from "react-icons/fa";
 export default function Hero() {
   return (
     <section className="py-12 lg:py-20">
-      <div className="max-w-7xl mx-auto px-2 lg:px-8">
+      <div className="max-w-7xl mx-auto px-2 lg:px-8 ">
 
         <div className="grid lg:grid-cols-2 gap-10 items-center rounded-[40px] overflow-hidden bg-gradient-to-r from-slate-950 via-blue-950 to-slate-950 p-8 lg:p-14">
 

@@ -1,32 +1,61 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import Image from "next/image";
+import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import { usePathname, useRouter } from "next/navigation";
+
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 
-import { FaHeartbeat } from "react-icons/fa";
-import { FiMenu, FiX, FiMoon, FiSun } from "react-icons/fi";
+import {
+  FaUser,
+  FaSignOutAlt,
+  FaThLarge,
+  FaCalendarAlt,
+  FaHeartbeat,
+} from "react-icons/fa";
 
-
+import { FiMoon, FiSun } from "react-icons/fi";
 
 export default function Navbar() {
-
+  const pathname = usePathname();
   const router = useRouter();
+
   const { data: session } = authClient.useSession();
-  const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
   const { theme, setTheme } = useTheme();
-  const pathname = usePathname();
 
-  const [showProfileMenu, setShowProfileMenu] =
-    useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        setDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+
+    return () =>
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
   }, []);
 
   const handleLogout = async () => {
@@ -36,8 +65,6 @@ export default function Navbar() {
 
     router.push("/");
   };
-
-  const role = "Patient";
 
   const navItems = [
     { name: "Home", href: "/" },
@@ -57,7 +84,9 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 lg:px-8 h-10 flex items-center justify-between text-sm">
           <p>🚑 Emergency Hotline: +880 1234 567 890</p>
 
-          <p className="hidden md:block">🩺 Trusted Healthcare Platform</p>
+          <p className="hidden md:block">
+            🩺 Trusted Healthcare Platform
+          </p>
         </div>
       </div>
 
@@ -65,15 +94,22 @@ export default function Navbar() {
       <nav className="bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           <div className="flex justify-between items-center h-20">
+
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-blue-600 to-sky-500 flex items-center justify-center shadow-lg">
+            <Link
+              href="/"
+              className="flex items-center gap-3"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-blue-600 to-sky-500 flex items-center justify-center">
                 <FaHeartbeat className="text-white text-2xl" />
               </div>
 
               <div>
-                <h1 className="text-3xl font-bold whitespace-nowrap text-slate-900 dark:text-white">
-                  <span className="text-blue-600">MediCare</span> Connect
+                <h1 className="text-3xl font-bold">
+                  <span className="text-blue-600">
+                    MediCare
+                  </span>{" "}
+                  Connect
                 </h1>
 
                 <p className="text-sm text-slate-500">
@@ -88,9 +124,9 @@ export default function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`px-4 py-2 rounded-xl transition-all duration-300 ${pathname === item.href
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "text-slate-700 dark:text-slate-200 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-slate-800"
+                  className={`px-4 py-2 rounded-xl ${pathname === item.href
+                      ? "bg-blue-600 text-white"
+                      : "hover:bg-blue-50"
                     }`}
                 >
                   {item.name}
@@ -100,10 +136,15 @@ export default function Navbar() {
 
             {/* Right Side */}
             <div className="hidden lg:flex items-center gap-5">
+
               {mounted && (
                 <button
                   onClick={() =>
-                    setTheme(theme === "dark" ? "light" : "dark")
+                    setTheme(
+                      theme === "dark"
+                        ? "light"
+                        : "dark"
+                    )
                   }
                   className="p-3 rounded-full bg-slate-100 dark:bg-slate-800"
                 >
@@ -119,9 +160,9 @@ export default function Navbar() {
                 <>
                   <Link
                     href="/login"
-                    className={`px-4 py-2 rounded-xl transition-all ${pathname === "/login"
-                      ? "bg-blue-600 text-white"
-                      : "hover:bg-blue-50"
+                    className={`px-4 py-2 rounded-xl transition-all duration-300 ${pathname === "/login"
+                        ? "bg-blue-600 text-white shadow-md"
+                        : "text-slate-1000 dark:text-slate-200 hover:bg-blue-50 hover:text-blue-600"
                       }`}
                   >
                     Sign In
@@ -129,38 +170,43 @@ export default function Navbar() {
 
                   <Link
                     href="/register"
-                    className={`px-4 py-2 rounded-xl transition-all ${pathname === "/register"
-                      ? "bg-blue-600 text-white"
-                      : "hover:bg-blue-50"
+                    className={`px-4 py-2 rounded-xl transition-all duration-300 ${pathname === "/register"
+                        ? "bg-blue-600 text-white shadow-md"
+                        : "text-slate-1000 dark:text-slate-200 hover:bg-blue-50 hover:text-blue-600"
                       }`}
                   >
                     Join Us
                   </Link>
                 </>
               ) : (
-                <div className="relative">
-
+                <div
+                  className="relative"
+                  ref={dropdownRef}
+                >
                   <button
                     onClick={() =>
-                      setShowProfileMenu(!showProfileMenu)
+                      setDropdownOpen(
+                        !dropdownOpen
+                      )
                     }
-                    className="flex items-center gap-2"
                   >
-                    <img
+                    <Image
+                      width={44}
+                      height={44}
                       src={
                         session?.user?.image ||
                         "https://i.pravatar.cc/150?img=12"
                       }
                       alt="profile"
-                      className="w-11 h-11 rounded-full object-cover border-2 border-blue-500"
+                      className="rounded-full border-2 border-blue-500"
                     />
                   </button>
 
-                  {showProfileMenu && (
-                    <div className="absolute right-0 mt-3 w-56 bg-white dark:bg-slate-900 rounded-xl shadow-lg border dark:border-slate-700 overflow-hidden">
+                  {dropdownOpen && (
+                    <div className="absolute right-0 mt-3 w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border overflow-hidden">
 
-                      <div className="px-4 py-3 border-b dark:border-slate-700">
-                        <p className="font-semibold">
+                      <div className="px-4 py-4 border-b">
+                        <p className="font-bold">
                           {session?.user?.name}
                         </p>
 
@@ -170,98 +216,43 @@ export default function Navbar() {
                       </div>
 
                       <Link
-                        href="/profile"
-                        className="block px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800"
-                      >
-                        My Profile
-                      </Link>
-
-                      <Link
                         href="/dashboard"
-                        className="block px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800"
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-slate-100"
                       >
+                        <FaThLarge />
                         Dashboard
                       </Link>
 
                       <Link
-                        href="/appointments"
-                        className="block px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800"
+                        href="/profile"
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-slate-100"
                       >
+                        <FaUser />
+                        My Profile
+                      </Link>
+
+                      <Link
+                        href="/appointments"
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-slate-100"
+                      >
+                        <FaCalendarAlt />
                         My Appointments
                       </Link>
 
                       <button
                         onClick={handleLogout}
-                        className="w-full text-left px-4 py-3 text-red-500 hover:bg-red-50"
+                        className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50"
                       >
+                        <FaSignOutAlt />
                         Logout
                       </button>
-
                     </div>
                   )}
                 </div>
               )}
             </div>
 
-            {/* Mobile Toggle */}
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden text-2xl dark:text-white"
-            >
-              {isOpen ? <FiX /> : <FiMenu />}
-            </button>
           </div>
-
-          {/* Mobile Menu */}
-          {/* Mobile Menu */}
-          {isOpen && (
-            <div className="lg:hidden border-t dark:border-slate-800 py-4">
-              <div className="flex flex-col gap-4">
-
-                {navItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-
-                {session ? (
-                  <>
-                    <Link href="/dashboard">
-                      Dashboard
-                    </Link>
-
-                    <button
-                      onClick={handleLogout}
-                      className="text-left text-red-500"
-                    >
-                      Logout
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      href="/login"
-                      className="border rounded-lg py-2 text-center"
-                    >
-                      Sign In
-                    </Link>
-
-                    <Link
-                      href="/register"
-                      className="bg-blue-600 text-white rounded-lg py-2 text-center"
-                    >
-                      Join Us
-                    </Link>
-                  </>
-                )}
-
-              </div>
-            </div>
-          )}
         </div>
       </nav>
     </header>

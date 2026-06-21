@@ -8,12 +8,19 @@ import WhyChooseUs from "@/components/home/WhyChooseUs";
 
 
 export default function Home() {
+
+   const stats = {
+    totalDoctors: 120,
+    totalPatients: 2500,
+    totalAppointments: 5000,
+    totalReviews: 1800,
+  };
   return (
     <div>
       <Hero></Hero>
       <FeaturedDoctors></FeaturedDoctors>
       <Specializations></Specializations>
-      <Statistics></Statistics>
+       <Statistics stats={stats} />
       <Testimonials></Testimonials>
       <WhyChooseUs></WhyChooseUs>
     </div>
