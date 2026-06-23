@@ -2,7 +2,6 @@
 
 import { authClient } from "@/lib/auth-client";
 import PatientOverviewItems from "@/components/home/PatientOverviewItems";
-
 export default function PatientDashboard() {
     const { data: session } = authClient.useSession();
 

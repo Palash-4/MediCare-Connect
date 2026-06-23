@@ -17,18 +17,25 @@ import {
   FaHeartbeat,
 } from "react-icons/fa";
 
-import { FiMoon, FiSun } from "react-icons/fi";
+import {
+  FiMoon,
+  FiSun,
+  FiMenu,
+  FiX,
+} from "react-icons/fi";
 
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
   const { data: session } = authClient.useSession();
+  console.log("SESSION =", session);
 
   const { theme, setTheme } = useTheme();
 
   const [mounted, setMounted] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const dropdownRef = useRef(null);
 
@@ -59,12 +66,17 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = async () => {
-    await authClient.signOut();
+  const { error } = await authClient.signOut();
 
-    toast.success("Logged Out");
+  if (error) {
+    toast.error("Logout Failed");
+    return;
+  }
 
-    router.push("/");
-  };
+  toast.success("Logged Out Successfully");
+
+  window.location.href = "/";
+};
 
   const navItems = [
     { name: "Home", href: "/" },
@@ -73,18 +85,20 @@ export default function Navbar() {
     { name: "Contact Us", href: "/contact" },
 
     ...(session
-      ? [{ name: "Dashboard", href: "/dashboard" }]
-      : []),
+  ? [{ name: "Dashboard", href: "/dashboard/patient" }]
+  : []),
   ];
 
   return (
     <header className="sticky top-0 z-50">
       {/* Top Bar */}
       <div className="bg-blue-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 h-10 flex items-center justify-between text-sm">
-          <p>🚑 Emergency Hotline: +880 1234 567 890</p>
+        <div className="max-w-7xl mx-auto px-4 h-10 flex items-center justify-between text-xs md:text-sm">
+          <p className="hidden sm:block">
+            🚑 Emergency Hotline: +880 1234 567 890
+          </p>
 
-          <p className="hidden md:block">
+          <p className="mx-auto md:mx-0">
             🩺 Trusted Healthcare Platform
           </p>
         </div>
@@ -100,19 +114,19 @@ export default function Navbar() {
               href="/"
               className="flex items-center gap-3"
             >
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-blue-600 to-sky-500 flex items-center justify-center">
-                <FaHeartbeat className="text-white text-2xl" />
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-r from-blue-600 to-sky-500 flex items-center justify-center">
+                <FaHeartbeat className="text-white text-xl md:text-2xl" />
               </div>
 
               <div>
-                <h1 className="text-3xl font-bold">
+                <h1 className="text-xl md:text-3xl font-bold">
                   <span className="text-blue-600">
                     MediCare
                   </span>{" "}
                   Connect
                 </h1>
 
-                <p className="text-sm text-slate-500">
+                <p className="hidden md:block text-sm text-slate-500">
                   Smart Healthcare Platform
                 </p>
               </div>
@@ -125,8 +139,8 @@ export default function Navbar() {
                   key={item.href}
                   href={item.href}
                   className={`px-4 py-2 rounded-xl ${pathname === item.href
-                      ? "bg-blue-600 text-white"
-                      : "hover:bg-blue-50"
+                    ? "bg-blue-600 text-white"
+                    : "hover:bg-blue-50 dark:hover:bg-slate-800"
                     }`}
                 >
                   {item.name}
@@ -134,7 +148,7 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* Right Side */}
+            {/* Desktop Right Side */}
             <div className="hidden lg:flex items-center gap-5">
 
               {mounted && (
@@ -160,20 +174,14 @@ export default function Navbar() {
                 <>
                   <Link
                     href="/login"
-                    className={`px-4 py-2 rounded-xl transition-all duration-300 ${pathname === "/login"
-                        ? "bg-blue-600 text-white shadow-md"
-                        : "text-slate-1000 dark:text-slate-200 hover:bg-blue-50 hover:text-blue-600"
-                      }`}
+                    className="px-4 py-2 rounded-xl hover:bg-blue-50"
                   >
                     Sign In
                   </Link>
 
                   <Link
                     href="/register"
-                    className={`px-4 py-2 rounded-xl transition-all duration-300 ${pathname === "/register"
-                        ? "bg-blue-600 text-white shadow-md"
-                        : "text-slate-1000 dark:text-slate-200 hover:bg-blue-50 hover:text-blue-600"
-                      }`}
+                    className="px-4 py-2 rounded-xl bg-blue-600 text-white"
                   >
                     Join Us
                   </Link>
@@ -185,9 +193,7 @@ export default function Navbar() {
                 >
                   <button
                     onClick={() =>
-                      setDropdownOpen(
-                        !dropdownOpen
-                      )
+                      setDropdownOpen(!dropdownOpen)
                     }
                   >
                     <Image
@@ -195,7 +201,7 @@ export default function Navbar() {
                       height={44}
                       src={
                         session?.user?.image ||
-                        "https://i.pravatar.cc/150?img=12"
+                        "/default-avatar.svg"
                       }
                       alt="profile"
                       className="rounded-full border-2 border-blue-500"
@@ -216,8 +222,8 @@ export default function Navbar() {
                       </div>
 
                       <Link
-                        href="/dashboard"
-                        className="flex items-center gap-3 px-4 py-3 hover:bg-slate-100"
+                        href="/dashboard/patient"
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800"
                       >
                         <FaThLarge />
                         Dashboard
@@ -225,7 +231,7 @@ export default function Navbar() {
 
                       <Link
                         href="/profile"
-                        className="flex items-center gap-3 px-4 py-3 hover:bg-slate-100"
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800"
                       >
                         <FaUser />
                         My Profile
@@ -233,7 +239,7 @@ export default function Navbar() {
 
                       <Link
                         href="/appointments"
-                        className="flex items-center gap-3 px-4 py-3 hover:bg-slate-100"
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800"
                       >
                         <FaCalendarAlt />
                         My Appointments
@@ -241,7 +247,7 @@ export default function Navbar() {
 
                       <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50"
+                        className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
                       >
                         <FaSignOutAlt />
                         Logout
@@ -252,8 +258,98 @@ export default function Navbar() {
               )}
             </div>
 
+            {/* Mobile Menu Button */}
+            <div className="lg:hidden flex items-center gap-3">
+
+              {mounted && (
+                <button
+                  onClick={() =>
+                    setTheme(theme === "dark" ? "light" : "dark")
+                  }
+                  className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800"
+                >
+                  {theme === "dark" ? (
+                    <FiSun size={18} />
+                  ) : (
+                    <FiMoon size={18} />
+                  )}
+                </button>
+              )}
+
+              <button
+                onClick={() =>
+                  setMobileMenuOpen(!mobileMenuOpen)
+                }
+                className="p-2 border rounded-lg"
+              >
+                {mobileMenuOpen ? (
+                  <FiX size={22} />
+                ) : (
+                  <FiMenu size={22} />
+                )}
+              </button>
+
+            </div>
+
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden border-t bg-white dark:bg-slate-950">
+
+            <div className="flex flex-col p-4 space-y-3">
+
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() =>
+                    setMobileMenuOpen(false)
+                  }
+                  className="px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800"
+                >
+                  {item.name}
+                </Link>
+              ))}
+
+              {!session ? (
+                <>
+                  <Link
+                    href="/login"
+                    onClick={() =>
+                      setMobileMenuOpen(false)
+                    }
+                    className="px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800"
+                  >
+                    Sign In
+                  </Link>
+
+                  <Link
+                    href="/register"
+                    onClick={() =>
+                      setMobileMenuOpen(false)
+                    }
+                    className="px-4 py-3 rounded-xl bg-blue-600 text-white"
+                  >
+                    Join Us
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={handleLogout}
+                    className="px-4 py-3 rounded-xl bg-red-500 text-white"
+                  >
+                    Logout
+                  </button>
+                </>
+              )}
+
+            </div>
+
+          </div>
+        )}
       </nav>
     </header>
   );
