@@ -18,7 +18,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     fetch(
-      "http://localhost:5000/api/dashboard/admin"
+      `${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/admin`
     )
       .then((res) => res.json())
       .then((data) => setStats(data));

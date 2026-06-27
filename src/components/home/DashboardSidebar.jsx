@@ -31,7 +31,7 @@ export default function DashboardSidebar() {
     if (!session?.user?.email) return;
 
     fetch(
-      `http://localhost:5000/api/users/${session.user.email}`
+      `${process.env.NEXT_PUBLIC_API_URL}/api/users/${session.user.email}`
     )
       .then((res) => res.json())
       .then((data) => {

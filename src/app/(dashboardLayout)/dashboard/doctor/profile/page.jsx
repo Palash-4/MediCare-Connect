@@ -91,7 +91,7 @@ export default function DoctorProfilePage() {
       };
 
       const res = await fetch(
-        "http://localhost:5000/api/doctors",
+        `${process.env.NEXT_PUBLIC_API_URL}/api/doctors`,
         {
           method: "POST",
           headers: {

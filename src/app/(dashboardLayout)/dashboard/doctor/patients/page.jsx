@@ -22,7 +22,7 @@ export default function DocPatientsPage() {
     if (!session?.user?.email) return;
 
     fetch(
-      `http://localhost:5000/api/doctor-patients/${session.user.email}`
+      `${process.env.NEXT_PUBLIC_API_URL}/api/doctor-patients/${session.user.email}`
     )
       .then((res) => res.json())
       .then((data) => {

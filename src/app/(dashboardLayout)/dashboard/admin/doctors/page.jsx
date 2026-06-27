@@ -25,7 +25,7 @@ export default function AdminDoctorsPage() {
     const fetchDoctors = async () => {
         try {
             const res = await fetch(
-                "http://localhost:5000/api/doctors"
+                "${process.env.NEXT_PUBLIC_API_URL}/api/doctors"
             );
 
             const data = await res.json();
@@ -47,7 +47,7 @@ export default function AdminDoctorsPage() {
     ) => {
         try {
             const res = await fetch(
-                `http://localhost:5000/api/doctors/status/${id}`,
+                `${process.env.NEXT_PUBLIC_API_URL}/api/doctors/status/${id}`,
                 {
                     method: "PATCH",
                     headers: {

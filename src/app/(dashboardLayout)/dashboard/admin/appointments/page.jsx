@@ -24,7 +24,7 @@ export default function AdminAppointmentsPage() {
     async () => {
       try {
         const res = await fetch(
-          "http://localhost:5000/api/admin/appointments"
+          `${process.env.NEXT_PUBLIC_API_URL}/api/admin/appointments`
         );
 
         const data =
@@ -45,7 +45,7 @@ export default function AdminAppointmentsPage() {
     async (id) => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/admin/appointments/${id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/admin/appointments/${id}`,
           {
             method: "DELETE",
           }

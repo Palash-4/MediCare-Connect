@@ -22,7 +22,7 @@ export default function AppointmentPage() {
     if (!session?.user?.email) return;
 
     fetch(
-      `http://localhost:5000/api/appointments/${session.user.email}`
+      `${process.env.NEXT_PUBLIC_API_URL}/api/appointments/${session.user.email}`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -38,7 +38,7 @@ export default function AppointmentPage() {
   const handleCancel = async (id) => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/appointments/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/appointments/${id}`,
         {
           method: "DELETE",
         }

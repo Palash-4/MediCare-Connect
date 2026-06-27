@@ -23,7 +23,7 @@ export default function DoctorOverview() {
     if (!session?.user?.email) return;
 
     fetch(
-      `http://localhost:5000/api/dashboard/doctor/${session.user.email}`
+      `${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/doctor/${session.user.email}`
     )
       .then((res) => res.json())
       .then((data) => {

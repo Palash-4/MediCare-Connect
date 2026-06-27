@@ -25,7 +25,7 @@ export default function ProfilePage() {
     if (!session?.user?.email) return;
 
     fetch(
-      `http://localhost:5000/api/users/${session.user.email}`
+      `${process.env.NEXT_PUBLIC_API_URL}/api/users/${session.user.email}`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -113,7 +113,7 @@ export default function ProfilePage() {
 
       const res =
         await fetch(
-          `http://localhost:5000/api/users/${profile.email}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/users/${profile.email}`,
           {
             method: "PUT",
             headers: {

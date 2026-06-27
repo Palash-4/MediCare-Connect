@@ -22,7 +22,7 @@ export default function DocAppointmentPage() {
     if (!session?.user?.email) return;
 
     fetch(
-      `http://localhost:5000/api/doctor-appointments/${session.user.email}`
+      `${process.env.NEXT_PUBLIC_API_URL}/api/doctor-appointments/${session.user.email}`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -41,7 +41,7 @@ export default function DocAppointmentPage() {
   ) => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/appointments/status/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/appointments/status/${id}`,
         {
           method: "PATCH",
           headers: {
