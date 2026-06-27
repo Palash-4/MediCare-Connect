@@ -45,12 +45,12 @@ export default function DoctorOverview() {
   }
 
   if (!session) {
-  return (
-    <div className="flex justify-center py-20">
-      Loading...
-    </div>
-  );
-}
+    return (
+      <div className="flex justify-center py-20">
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
