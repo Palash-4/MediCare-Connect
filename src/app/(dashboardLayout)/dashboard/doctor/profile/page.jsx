@@ -133,8 +133,6 @@ export default function DoctorProfilePage() {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-
-      {/* Banner */}
       <div className="bg-gradient-to-r from-blue-600 via-cyan-500 to-sky-500 rounded-3xl p-8 text-white mb-8 shadow-xl">
         <h1 className="text-4xl font-bold">
           Complete Doctor Profile
