@@ -10,9 +10,11 @@ import {
 export default function ManageUsersPage() {
     const [users, setUsers] = useState([]);
 
+
     const API_URL =
         process.env.NEXT_PUBLIC_API_URL;
     useEffect(() => {
+        console.log("API URL =", API_URL);
         fetch(`${API_URL}/api/users`)
             .then((res) => res.json())
             .then((data) => {
