@@ -227,8 +227,6 @@ export default function DoctorsPage() {
           </div>
         ))}
       </div>
-
-      {/* Modal */}
       {selectedDoctor && (
         <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-50 p-4">
           <div className="bg-slate-900 rounded-3xl p-8 w-full max-w-xl">
@@ -293,7 +291,6 @@ export default function DoctorsPage() {
                   })
                 }
               />
-
               <div className="flex gap-4 pt-3">
 
                 <button
@@ -315,9 +312,7 @@ export default function DoctorsPage() {
                 >
                   Confirm Booking
                 </button>
-
               </div>
-
             </div>
           </div>
         </div>
