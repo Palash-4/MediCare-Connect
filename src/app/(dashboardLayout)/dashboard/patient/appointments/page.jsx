@@ -8,8 +8,12 @@ import {
   FaClock,
   FaUserMd,
 } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 export default function AppointmentPage() {
+
+  const router = useRouter();
+
   const { data: session } =
     authClient.useSession();
 
@@ -17,6 +21,7 @@ export default function AppointmentPage() {
     useState([]);
   const [loading, setLoading] =
     useState(true);
+
 
   useEffect(() => {
     if (!session?.user?.email) return;
@@ -236,12 +241,12 @@ export default function AppointmentPage() {
 
                     <span
                       className={`px-4 py-2 rounded-full text-sm font-semibold ${appointment.appointmentStatus ===
-                          "accepted"
-                          ? "bg-green-500/20 text-green-400"
-                          : appointment.appointmentStatus ===
-                            "rejected"
-                            ? "bg-red-500/20 text-red-400"
-                            : "bg-yellow-500/20 text-yellow-400"
+                        "accepted"
+                        ? "bg-green-500/20 text-green-400"
+                        : appointment.appointmentStatus ===
+                          "rejected"
+                          ? "bg-red-500/20 text-red-400"
+                          : "bg-yellow-500/20 text-yellow-400"
                         }`}
                     >
                       {
@@ -256,32 +261,43 @@ export default function AppointmentPage() {
                       Payment
                     </p>
 
-                    <span
-                      className={`px-4 py-2 rounded-full text-sm font-semibold ${appointment.paymentStatus ===
-                          "paid"
-                          ? "bg-blue-500/20 text-blue-400"
-                          : "bg-gray-500/20 text-gray-400"
-                        }`}
-                    >
-                      {
-                        appointment.paymentStatus
-                      }
-                    </span>
+                    {appointment.paymentStatus ===
+                      "paid" ? (
+                      <span className="px-4 py-2 rounded-full text-sm font-semibold bg-blue-500/20 text-blue-400">
+                        Paid
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() =>
+                          router.push(
+                            `/dashboard/patient/payment/${appointment._id}`
+                          )
+                        }
+                        className="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded-xl text-black font-semibold transition"
+                      >
+                        Pay Now
+                      </button>
+                    )}
                   </div>
 
                   {/* Action */}
-                  <div>
-                    <button
-                      onClick={() =>
-                        handleCancel(
-                          appointment._id
-                        )
-                      }
-                      className="w-full bg-red-600 hover:bg-red-700 py-3 rounded-xl text-white font-semibold transition"
-                    >
-                      Cancel
-                    </button>
-                  </div>
+                  <button
+                    disabled={
+                      appointment.paymentStatus ===
+                      "paid"
+                    }
+                    onClick={() =>
+                      handleCancel(
+                        appointment._id
+                      )
+                    }
+                    className="w-full bg-red-600 hover:bg-red-700 disabled:bg-slate-700 disabled:cursor-not-allowed py-3 rounded-xl text-white font-semibold transition"
+                  >
+                    {appointment.paymentStatus ===
+                      "paid"
+                      ? "Paid"
+                      : "Cancel"}
+                  </button>
 
                 </div>
               </div>

@@ -26,7 +26,6 @@ export default function DashboardSidebar() {
 
   const [user, setUser] = useState(null);
 
-  // MongoDB থেকে user data fetch
   useEffect(() => {
     if (!session?.user?.email) return;
 
