@@ -133,7 +133,6 @@ export default function DoctorsPage() {
         </p>
       </div>
 
-      {/* Doctor Cards */}
       <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
         {doctors.map((doctor) => (
           <div
