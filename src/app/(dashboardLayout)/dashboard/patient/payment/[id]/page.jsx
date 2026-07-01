@@ -21,9 +21,15 @@ export default function PaymentPage() {
       `${process.env.NEXT_PUBLIC_API_URL}/api/appointment/${id}`
     )
       .then((res) => res.json())
-      .then((data) =>
-        setAppointment(data)
-      );
+      .then((data) => {
+        console.log("Appointment:", data);
+        console.log(
+          "Consultation Fee:",
+          data.consultationFee
+        );
+
+        setAppointment(data);
+      });
   }, [id]);
 
   return (

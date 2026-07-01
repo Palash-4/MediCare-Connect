@@ -52,30 +52,17 @@ export default function DoctorsPage() {
           patientName: session?.user?.name,
           patientEmail: session?.user?.email,
 
-          doctorName:
-            selectedDoctor.doctorName,
-          doctorEmail:
-            selectedDoctor.email,
+          doctorName: selectedDoctor.doctorName,
+          doctorEmail: selectedDoctor.email,
+          consultationFee:
+            selectedDoctor.consultationFee,
 
-          appointmentDate:
-            appointment.appointmentDate,
+          appointmentDate: appointment.appointmentDate,
+          appointmentTime: appointment.appointmentTime,
+          symptoms: appointment.symptoms,
 
-          appointmentTime:
-            appointment.appointmentTime,
-
-          symptoms:
-            appointment.symptoms,
-
-          consultationFee: Number(
-            selectedDoctor.consultationFee
-          ),
-
-          appointmentStatus:
-            "pending",
-
-          paymentStatus:
-            "unpaid",
-
+          appointmentStatus: "pending",
+          paymentStatus: "unpaid",
           createdAt: new Date(),
         };
 
