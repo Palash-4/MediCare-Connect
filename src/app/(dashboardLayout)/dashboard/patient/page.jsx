@@ -1,7 +1,7 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
-import PatientOverviewItems from "@/components/home/PatientOverviewItems";
+import PatientOverviewCard from "@/components/home/PatientOverviewCard";
 export default function PatientDashboard() {
     const { data: session } = authClient.useSession();
 
@@ -23,7 +23,7 @@ export default function PatientDashboard() {
                     </p>
                 </div>
 
-                <PatientOverviewItems />
+               <PatientOverviewCard />
 
             </div>
         </div>
