@@ -9,8 +9,10 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
+
 export default function CheckoutForm({
   appointmentId,
+  amount,
 }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -85,10 +87,10 @@ export default function CheckoutForm({
                   fontSize:
                     "18px",
                   "::placeholder":
-                    {
-                      color:
-                        "#94a3b8",
-                    },
+                  {
+                    color:
+                      "#94a3b8",
+                  },
                 },
               },
             }}
@@ -105,7 +107,7 @@ export default function CheckoutForm({
       >
         {loading
           ? "Processing..."
-          : "Pay Consultation Fee"}
+          : `Pay ৳${amount || 0}`}
       </button>
     </form>
   );

@@ -49,10 +49,8 @@ export default function DoctorsPage() {
         }
 
         const appointmentData = {
-          patientName:
-            session?.user?.name,
-          patientEmail:
-            session?.user?.email,
+          patientName: session?.user?.name,
+          patientEmail: session?.user?.email,
 
           doctorName:
             selectedDoctor.doctorName,
@@ -61,15 +59,22 @@ export default function DoctorsPage() {
 
           appointmentDate:
             appointment.appointmentDate,
+
           appointmentTime:
             appointment.appointmentTime,
+
           symptoms:
             appointment.symptoms,
+
+          consultationFee: Number(
+            selectedDoctor.consultationFee
+          ),
 
           appointmentStatus:
             "pending",
 
-          paymentStatus: "paid",
+          paymentStatus:
+            "unpaid",
 
           createdAt: new Date(),
         };

@@ -197,7 +197,7 @@ export default function ProfilePage() {
                   session
                     ?.user
                     ?.image ||
-                  "https://i.ibb.co/fd5qCY7/avatar.png"
+                  "https://ui-avatars.com/api/?name=User"
             }
             alt="profile"
             className="w-32 h-32 rounded-full object-cover border-4 border-blue-500"

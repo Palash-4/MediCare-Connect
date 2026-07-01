@@ -143,7 +143,7 @@ export default function AdminDoctorsPage() {
                                 <Image
                                     src={
                                         doctor.profileImage ||
-                                        "https://i.ibb.co/fd5qCY7/avatar.png"
+                                        "https://ui-avatars.com/api/?name=User"
                                     }
                                     alt="doctor"
                                     width={80}
