@@ -146,12 +146,10 @@ export default function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`px-4 py-2 rounded-xl transition-all duration-300
-        ${isActive(item.href)
+                  className={`px-4 py-2 rounded-xl transition-all duration-300 ${isActive(item.href)
                       ? "bg-blue-600 text-white shadow-md"
                       : "text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-800"
-                    }
-      `}
+                    }`}
                 >
                   {item.name}
                 </Link>
@@ -317,12 +315,10 @@ export default function Navbar() {
                   onClick={() =>
                     setMobileMenuOpen(false)
                   }
-                  className={`px-4 py-3 rounded-xl transition-all duration-300
-      ${isActive(item.href)
-                      ? "bg-blue-600 text-white"
-                      : "hover:bg-slate-100 dark:hover:bg-slate-800"
-                    }
-    `}
+                  className={`px-4 py-3 rounded-xl transition-all duration-300${isActive(item.href)
+                    ? "bg-blue-600 text-white"
+                    : "hover:bg-slate-100 dark:hover:bg-slate-800"
+                    }`}
                 >
                   {item.name}
                 </Link>
